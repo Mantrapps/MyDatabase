@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * 
  * @author Kaiz
- *
+ * code adopted from Prof.Davis
  */
 public class mydb {
 	static String prompt="mydb> ";
