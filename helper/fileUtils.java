@@ -31,7 +31,6 @@ public class fileUtils {
 		RandomAccessFile randomFile= new RandomAccessFile("tabl.tbl","rw");
 		generateFile util=new generateFile();
 		byte[] data=util.pageHeader(pg);
-
 		randomFile.write(data);
 		randomFile.close();
 	}
@@ -42,8 +41,8 @@ public class fileUtils {
 		//String workingDir = System.getProperty("user.dir")+"/tabl.tbl";
 		//System.out.println(workingDir);
 		RandomAccessFile randomFile=new RandomAccessFile("tabl.tbl","r");
-		randomFile.seek(offset);
-		int type=randomFile.readByte();
+		randomFile.seek(8);
+		int type=randomFile.readInt();
 		log(type);
 		
 	}

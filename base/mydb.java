@@ -46,6 +46,8 @@ public class mydb {
 		/* Display the welcome screen */
 		splashScreen();
 		fileUtils test=new fileUtils();
+		
+		
 		/* Variable to collect user input from the prompt */
 		String userCommand = "";
 		while (!isExit) {
