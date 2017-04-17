@@ -6,8 +6,10 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 /**
  * Manage File Structure
  * @author Kaiz
@@ -43,10 +45,23 @@ public class fileUtils {
 		RandomAccessFile randomFile=new RandomAccessFile("tabl.tbl","r");
 		randomFile.seek(8);
 		int type=randomFile.readInt();
-		log(type);
+		//log(type);
 		
 	}
 	
+	//return list of all documents names in that folder
+	public List<String> getDBNames(String dir){
+		List<String> results = new ArrayList<String>();
+		File[] files = new File(dir).listFiles();
+		//If this pathname does not denote a directory, then listFiles() returns null. 
+		for (File file : files) {
+		    if (file.isDirectory()) {
+		        results.add(file.getName());
+		    }
+		}
+		//log(results);
+		return results;
+	}
 	public void log(Object msg){
 		System.out.println(String.valueOf(msg));
 	}

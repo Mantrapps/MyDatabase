@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.SortedMap;
 
+import ddl.showDatabase;
 import helper.fileUtils;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class mydb {
 	static String prompt = "mydb> ";
 	static String version = "v1.0a";
 	static String copyright = "©2017 Kai Zhu - kxz160030";
+	static String currDB="kaiDB";
 	static boolean isExit = false;
 	/*
 	 * Page size for alll files is 512 bytes by default. You may choose to make
@@ -45,7 +47,10 @@ public class mydb {
 		
 		/* Display the welcome screen */
 		splashScreen();
-		fileUtils test=new fileUtils();
+		
+		
+		//test purpose
+		//fileUtils test=new fileUtils();
 		
 		
 		/* Variable to collect user input from the prompt */
@@ -128,7 +133,7 @@ public class mydb {
 		System.out.println(getCopyright());
 	}
 
-	public static void parseUserCommand(String userCommand) {
+	public static void parseUserCommand(String userCommand) throws IOException {
 
 		/*
 		 * commandTokens is an array of Strings that contains one token per
@@ -145,6 +150,12 @@ public class mydb {
 		 * complex commands.
 		 */
 		switch (commandTokens.get(0)) {
+		case "use":
+			useDB(commandTokens);
+			break;
+		case "show":
+			show(commandTokens);
+			break;
 		case "select":
 			parseQueryString(userCommand);
 			break;
@@ -193,7 +204,39 @@ public class mydb {
 		System.out.println("STUB: Calling parseQueryString(String s) to process queries");
 		System.out.println("Parsing the string:\"" + queryString + "\"");
 	}
-
+	public static void useDB(ArrayList<String> s) throws IOException{
+		showDatabase sD=new showDatabase();
+		if(s.size()<2) log("not correct command");
+		else{
+			if(sD.checkDB(s.get(1))) {
+				log("current database: "+s.get(1)+";");
+				currDB=s.get(1);
+			}
+			else log("database: "+s.get(1)+" not exist!");
+		}
+		
+	}
+	public static void show(ArrayList<String> s) throws IOException{
+		if(s.size()<2) log("not correct command");
+		else{
+			if(s.get(1).equals("database")){
+				showDatabase sD=new showDatabase();
+				sD.showDatabase();
+			}
+			else if(s.get(1).equals("tables")){
+				
+			}
+			else if(s.get(1).equals("current")){
+				log("current database:");
+				log("--------------------");
+				log(currDB);
+				log("--------------------");
+			}
+			else {
+				log("command: "+ s.get(1)+", not supported");
+			}
+		}	
+	}
 	/**
 	 * Stub method for creating new tables
 	 * 
@@ -233,6 +276,9 @@ public class mydb {
 		 * Code to insert rows in the davisbase_columns table for each column in
 		 * the new table i.e. database catalog meta-data
 		 */
+	}
+	public static void log(Object msg){
+		System.out.println(String.valueOf(msg));
 	}
 
 }
