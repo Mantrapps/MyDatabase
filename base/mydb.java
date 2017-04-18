@@ -2,12 +2,15 @@ package base;
 
 import java.io.RandomAccessFile;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.SortedMap;
 
+import ddl.createTable;
 import ddl.showDatabase;
+import ddl.showTables;
 import helper.fileUtils;
 
 import java.util.ArrayList;
@@ -21,7 +24,7 @@ public class mydb {
 	static String prompt = "mydb> ";
 	static String version = "v1.0a";
 	static String copyright = "©2017 Kai Zhu - kxz160030";
-	static String currDB="kaiDB";
+	static String currDB="kaidb";
 	static boolean isExit = false;
 	/*
 	 * Page size for alll files is 512 bytes by default. You may choose to make
@@ -49,7 +52,7 @@ public class mydb {
 		splashScreen();
 		
 		
-		//test purpose
+		//test purpose line("-", 80)
 		//fileUtils test=new fileUtils();
 		
 		
@@ -150,12 +153,15 @@ public class mydb {
 		 * complex commands.
 		 */
 		switch (commandTokens.get(0)) {
+		//change current database
 		case "use":
 			useDB(commandTokens);
 			break;
+		// show tables/databases
 		case "show":
 			show(commandTokens);
 			break;
+		// select from 
 		case "select":
 			parseQueryString(userCommand);
 			break;
@@ -163,6 +169,7 @@ public class mydb {
 			System.out.println("STUB: Calling your method to drop items");
 			dropTable(userCommand);
 			break;
+		// create table, create database
 		case "create":
 			parseCreateString(userCommand);
 			break;
@@ -204,6 +211,7 @@ public class mydb {
 		System.out.println("STUB: Calling parseQueryString(String s) to process queries");
 		System.out.println("Parsing the string:\"" + queryString + "\"");
 	}
+	
 	public static void useDB(ArrayList<String> s) throws IOException{
 		showDatabase sD=new showDatabase();
 		if(s.size()<2) log("not correct command");
@@ -216,66 +224,59 @@ public class mydb {
 		}
 		
 	}
+	
 	public static void show(ArrayList<String> s) throws IOException{
 		if(s.size()<2) log("not correct command");
 		else{
-			if(s.get(1).equals("database")){
+			if(s.get(1).equals("databases")){
 				showDatabase sD=new showDatabase();
+				String title=String.format("%1$-10s %2$-10s","rowid","db_Name");
+				log(title);
+				log(line("-", 80));
 				sD.showDatabase();
+				log(line("-", 80));
 			}
 			else if(s.get(1).equals("tables")){
-				
+				showTables sT=new showTables();
+				String title=String.format("%1$-10s %2$-10s %3$-10s","rowid","db_Name","table_Name");
+				log(title);
+				log(line("-", 80));
+				sT.show(currDB);
+				log(line("-", 80));
 			}
 			else if(s.get(1).equals("current")){
 				log("current database:");
-				log("--------------------");
+				log(line("-", 80));
 				log(currDB);
-				log("--------------------");
+				log(line("-", 80));
 			}
 			else {
 				log("command: "+ s.get(1)+", not supported");
 			}
 		}	
 	}
+	
 	/**
 	 * Stub method for creating new tables
 	 * 
 	 * @param queryString
 	 *            is a String of the user input
+	 * @throws IOException 
 	 */
-	public static void parseCreateString(String createTableString) {
+	public static void parseCreateString(String createTableString) throws IOException {
 
-		System.out.println("STUB: Calling your method to create a table");
+		//System.out.println("STUB: Calling your method to create a table");
 		System.out.println("Parsing the string:\"" + createTableString + "\"");
 		ArrayList<String> createTableTokens = new ArrayList<String>(Arrays.asList(createTableString.split(" ")));
-
-		/* Define table file name */
-		String tableFileName = createTableTokens.get(2) + ".tbl";
-
-		/* YOUR CODE GOES HERE */
-
-		/* Code to create a .tbl file to contain table data */
-		try {
-			/*
-			 * Create RandomAccessFile tableFile in read-write mode. Note that
-			 * this doesn't create the table file in the correct directory
-			 * structure
-			 */
-			RandomAccessFile tableFile = new RandomAccessFile(tableFileName, "rw");
-			tableFile.setLength(pageSize);
-		} catch (Exception e) {
-			System.out.println(e);
+		if(createTableTokens.get(1).equals("table")){
+			createTable cT=new createTable();
+			cT.create(createTableTokens,currDB,pageSize, createTableString);
 		}
-
-		/*
-		 * Code to insert a row in the davisbase_tables table i.e. database
-		 * catalog meta-data
-		 */
-
-		/*
-		 * Code to insert rows in the davisbase_columns table for each column in
-		 * the new table i.e. database catalog meta-data
-		 */
+		else if(createTableTokens.get(1).equals("database")){
+			// to be finish
+		}
+		else log("create "+ createTableTokens.get(1)+", not supported");
+		
 	}
 	public static void log(Object msg){
 		System.out.println(String.valueOf(msg));

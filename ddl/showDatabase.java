@@ -9,14 +9,15 @@ public class showDatabase {
 	public void showDatabase() throws IOException{
 		fileUtils helper=new fileUtils();
 		List<String> res=helper.getDBNames(System.getProperty("user.dir")+"/data/");
-		log("databases");
-		log("--------------------");
+		int count=1;
 		for(String i:res){
 			if(!i.equals("catalog")) {
-				log(i);
+				String row=String.format("%1$-10s %2$-10s",count,i);
+				log(row);
+				count++;
 			}
 		}
-		log("--------------------");
+		
 	}
 	public boolean checkDB(String s) throws IOException{
 		fileUtils helper=new fileUtils();
